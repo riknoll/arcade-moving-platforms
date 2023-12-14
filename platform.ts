@@ -171,6 +171,15 @@ namespace movingPlatforms {
             return this._map;
         }
 
+        public isObstacle(col: number, row: number): boolean {
+            if (!this.enabled) return false;
+
+            const isOuterTilemap = game.currentScene().tileMap === this;
+            if (this._map.isOutsideMap(col, row)) return isOuterTilemap;
+
+            return this._map.isWall(col, row);
+        }
+
         protected draw(target: Image, camera: scene.Camera) {
             if (!this.enabled) return;
 
