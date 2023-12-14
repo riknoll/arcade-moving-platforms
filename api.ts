@@ -39,4 +39,37 @@ namespace movingPlatforms {
     export function _platformKind(kind: number): number {
         return kind;
     }
+
+    /**
+     * Run code when two kinds of sprites overlap
+     */
+    //% blockId=movingPlatforms_onSquish
+    //% block="on $sprite of kind $kind squished by $platform"
+    //% kind.shadow=spritekind
+    //% draggableParameters="reporter"
+    export function onSquish(kind: number, handler: (sprite: Sprite, platform: Platform) => void) {
+        if (kind == undefined || !handler) return;
+        const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
+        const sh = physics.squishHandlers; //
+
+        sh.push(
+            new SquishHandler(
+                kind,
+                handler
+            )
+        );
+    }
+
+    /**
+     * Run code when two kinds of sprites overlap
+     */
+    //% blockId=movingPlatforms_onSquish
+    //% block="on $sprite of kind $spriteKind $event $platform of kind $platformKind"
+    //% spriteKind.shadow=spritekind
+    //% platformKind.shadow=movingplatforms_platformkind
+    //% draggableParameters="reporter"
+    export function onEvent(event: PlatformEvent, spritekind: number, platformKind: number, handler: (sprite: Sprite, platform: Platform) => void) {
+        const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
+        physics.addEventHandler(event, spritekind, platformKind, handler);
+    }
 }

@@ -2,33 +2,19 @@ namespace movingPlatforms {
     export let _debug = false;
     const OBSTACLE_DATA_KEY = "%OBSTACLE_DATA_KEY"
 
-    export enum PlatformEvent {
-        Ride,
-        Push,
-        Squish,
-        Collide
-    }
-
-    class EventHandler {
-        constructor(
-            public event: PlatformEvent,
-            public spriteKind: number,
-            public platformKind: number,
-            public handler: (sprite: Sprite, platform: Platform) => void
-        ) {}
-    }
-
     /**
     * A physics engine that does simple AABB bounding box check
     */
     export class MovingPlatformsPhysics extends ArcadePhysicsEngine {
         tilemaps: Platform[];
         eventHandlers: EventHandler[];
+        squishHandlers: SquishHandler[];
 
         constructor(maxVelocity = 500, minSingleStep = 2, maxSingleStep = 4) {
             super(maxVelocity, minSingleStep, maxSingleStep);
             this.tilemaps = [];
             this.eventHandlers = [];
+            this.squishHandlers = [];
         }
 
         addEventHandler(kind: PlatformEvent, spriteKind: number, platformKind: number, handler: (sprite: Sprite, platform: Platform) => void) {
@@ -318,6 +304,11 @@ namespace movingPlatforms {
 
                                 if (squished) {
                                     sprite.flags |= sprites.Flag.IsClipping;
+                                    nonRiders.removeElement(sprite)
+                                    this.squishHandlers
+                                        .filter(h => h.kind == sprite.kind())
+                                        .forEach(h => h.handler(sprite, tm));
+
                                     if (movingPlatforms._debug) {
                                         console.log("squished!")
                                     }
