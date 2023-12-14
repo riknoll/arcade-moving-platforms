@@ -5,6 +5,7 @@
         "platform.ts",
         "obstacles.ts",
         "physics.ts",
+        "api.ts",
         "main.ts"
     ],
     "supportedTargets": [

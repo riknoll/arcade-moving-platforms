@@ -29,7 +29,7 @@ namespace movingPlatforms {
                 if (s.vx || s.vy) clearObstacles(s);
                 else {
                     for (const ob of getObstacles(s)) {
-                        if (ob && (ob.tilemap.vx || ob.tilemap.vy)) {
+                        if (ob && (ob.tilemap._vx || ob.tilemap._vy)) {
                             clearObstacles(s);
                             break;
                         }
@@ -126,13 +126,69 @@ namespace movingPlatforms {
             }
 
             for (const tm of this.tilemaps) {
-                if (tm.vx || tm.vy) {
+                if (tm._ax) {
+                    tm._vx = Fx.add(
+                        tm._vx,
+                        Fx.idiv(
+                            Fx.imul(
+                                tm._ax,
+                                dtMs
+                            ),
+                            1000
+                        )
+                    );
+                } else if (tm._fx) {
+                    const fx = Fx.idiv(
+                        Fx.imul(
+                            tm._fx,
+                            dtMs
+                        ),
+                        1000
+                    );
+                    const c = Fx.compare(tm._vx, fx);
+                    if (c < 0) // v < f, v += f
+                        tm._vx = Fx.min(Fx.zeroFx8, Fx.add(tm._vx, fx));
+                    else if (c > 0) // v > f, v -= f
+                        tm._vx = Fx.max(Fx.zeroFx8, Fx.sub(tm._vx, fx));
+                    else
+                        tm._vx = Fx.zeroFx8
+                }
+
+                if (tm._ay) {
+                    tm._vy = Fx.add(
+                        tm._vy,
+                        Fx.idiv(
+                            Fx.imul(
+                                tm._ay,
+                                dtMs
+                            ),
+                            1000
+                        )
+                    );
+                } else if (tm._fy) {
+                    const fy = Fx.idiv(
+                        Fx.imul(
+                            tm._fy,
+                            dtMs
+                        ),
+                        1000
+                    );
+                    const c = Fx.compare(tm._vy, fy);
+                    if (c < 0) // v < f, v += f
+                        tm._vy = Fx.min(Fx.zeroFx8, Fx.add(tm._vy, fy));
+                    else if (c > 0) // v > f, v -= f
+                        tm._vy = Fx.max(Fx.zeroFx8, Fx.sub(tm._vy, fy));
+                    else
+                        tm._vy = Fx.zeroFx8;
+                }
+
+                if (tm._vx || tm._vy) {
                     const nonRiders: Sprite[] = [];
                     const riders: Sprite[] = [];
 
                     let dx = Fx.idiv(
                         Fx.imul(
-                            tm.vx,
+                            tm._vx,
                             dtMs
                         ),
                         1000
@@ -140,7 +196,7 @@ namespace movingPlatforms {
 
                     let dy = Fx.idiv(
                         Fx.imul(
-                            tm.vy,
+                            tm._vy,
                             dtMs
                         ),
                         1000
@@ -191,8 +247,8 @@ namespace movingPlatforms {
                             dy = Fx.sub(dy, ddy);
                         }
 
-                        tm.left = Fx.add(ddx, tm.left);
-                        tm.top = Fx.add(ddy, tm.top);
+                        tm._left = Fx.add(ddx, tm._left);
+                        tm._top = Fx.add(ddy, tm._top);
 
                         for (const sprite of nonRiders) {
                             let wasPushed = false;
@@ -322,7 +378,7 @@ namespace movingPlatforms {
                                             Fx.sub(hbox.left, Fx.oneFx8),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm.left
+                                    tm._left
                                 ),
                                 tileScale
                             );
@@ -339,7 +395,7 @@ namespace movingPlatforms {
                                         ),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm.top
+                                    tm._top
                                 ),
                                 tileScale
                             );
@@ -436,7 +492,7 @@ namespace movingPlatforms {
                                             Fx.sub(hbox.top, Fx.oneFx8),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm.top
+                                    tm._top
                                 ),
                                 tileScale
                             );
@@ -449,7 +505,7 @@ namespace movingPlatforms {
                                         ),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm.left
+                                    tm._left
                                 ),
                                 tileScale
                             );
@@ -545,7 +601,7 @@ namespace movingPlatforms {
                                         ),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm.left
+                                    tm._left
                                 ),
                                 tileScale
                             );
@@ -559,7 +615,7 @@ namespace movingPlatforms {
                                         ),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm.top
+                                    tm._top
                                 ),
                                 tileScale
                             );
@@ -615,10 +671,10 @@ namespace movingPlatforms {
     }
 
     function ___overlapsTilemap(sprite: Sprite, tilemap: Platform) {
-        let x0 = Fx.toIntShifted(Fx.sub(sprite._hitbox.left, tilemap.left), tilemap.scale);
-        let y0 = Fx.toIntShifted(Fx.sub(sprite._hitbox.top, tilemap.top), tilemap.scale);
-        let x1 = Fx.toIntShifted(Fx.sub(sprite._hitbox.right, tilemap.left), tilemap.scale);
-        let y1 = Fx.toIntShifted(Fx.sub(sprite._hitbox.bottom, tilemap.top), tilemap.scale);
+        let x0 = Fx.toIntShifted(Fx.sub(sprite._hitbox.left, tilemap._left), tilemap.scale);
+        let y0 = Fx.toIntShifted(Fx.sub(sprite._hitbox.top, tilemap._top), tilemap.scale);
+        let x1 = Fx.toIntShifted(Fx.sub(sprite._hitbox.right, tilemap._left), tilemap.scale);
+        let y1 = Fx.toIntShifted(Fx.sub(sprite._hitbox.bottom, tilemap._top), tilemap.scale);
 
         for (let x = Math.max(0, x0); x <= x1; x++) {
             for (let y = Math.max(0, y0); y <= y1; y++) {
