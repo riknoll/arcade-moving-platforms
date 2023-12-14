@@ -68,8 +68,8 @@ namespace movingPlatforms {
     //% spriteKind.shadow=spritekind
     //% platformKind.shadow=movingplatforms_platformkind
     //% draggableParameters="reporter"
-    export function onEvent(event: PlatformEvent, spritekind: number, platformKind: number, handler: (sprite: Sprite, platform: Platform) => void) {
+    export function onEvent(event: PlatformEvent, spriteKind: number, platformKind: number, handler: (sprite: Sprite, platform: Platform) => void) {
         const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
-        physics.addEventHandler(event, spritekind, platformKind, handler);
+        physics.addEventHandler(event, spriteKind, platformKind, handler);
     }
 }
