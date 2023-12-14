@@ -1,0 +1,1 @@
+movingPlatforms.__init();
