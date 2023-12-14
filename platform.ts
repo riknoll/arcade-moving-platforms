@@ -10,6 +10,28 @@ namespace movingPlatforms {
         _fy = Fx.zeroFx8;
 
         //% group="Physics" blockSetVariable="myPlatform"
+        //% blockCombine block="x" callInDebugger
+        get x(): number {
+            return Fx.toFloat(Fx.add(this._left, Fx.div(Fx8(this.width), Fx.twoFx8)));
+        }
+        //% group="Physics" blockSetVariable="myPlatform"
+        //% blockCombine block="x"
+        set x(v: number) {
+            this.left = v - (this.width / 2)
+        }
+
+        //% group="Physics" blockSetVariable="myPlatform"
+        //% blockCombine block="y" callInDebugger
+        get y(): number {
+            return Fx.toFloat(Fx.add(this._top, Fx.div(Fx8(this.height), Fx.twoFx8)));
+        }
+        //% group="Physics" blockSetVariable="myPlatform"
+        //% blockCombine block="y"
+        set y(v: number) {
+            this.top = v - (this.height / 2)
+        }
+
+        //% group="Physics" blockSetVariable="myPlatform"
         //% blockCombine block="width" callInDebugger
         get width() {
             return (this._map.width << this.scale)
@@ -62,28 +84,6 @@ namespace movingPlatforms {
         //% blockCombine block="bottom"
         set bottom(value: number) {
             this.top = value - this.height;
-        }
-
-        //% group="Physics" blockSetVariable="myPlatform"
-        //% blockCombine block="x" callInDebugger
-        get x(): number {
-            return Fx.toFloat(Fx.add(this._left, Fx.div(Fx8(this.width), Fx.twoFx8)));
-        }
-        //% group="Physics" blockSetVariable="myPlatform"
-        //% blockCombine block="x"
-        set x(v: number) {
-            this.left = v - (this.width / 2)
-        }
-
-        //% group="Physics" blockSetVariable="myPlatform"
-        //% blockCombine block="y" callInDebugger
-        get y(): number {
-            return Fx.toFloat(Fx.add(this._top, Fx.div(Fx8(this.height), Fx.twoFx8)));
-        }
-        //% group="Physics" blockSetVariable="myPlatform"
-        //% blockCombine block="y"
-        set y(v: number) {
-            this.top = v - (this.height / 2)
         }
 
         //% group="Physics" blockSetVariable="myPlatform"
