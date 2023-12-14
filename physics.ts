@@ -290,6 +290,7 @@ namespace movingPlatforms {
 
                                 if (squished) {
                                     sprite.flags |= sprites.Flag.IsClipping;
+                                    nonRiders.removeElement(sprite)
                                     this.squishHandlers
                                         .filter(h => h.kind == sprite.kind())
                                         .forEach(h => h.handler(sprite, tm));
