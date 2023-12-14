@@ -2,15 +2,37 @@ namespace movingPlatforms {
     export let _debug = false;
     const OBSTACLE_DATA_KEY = "%OBSTACLE_DATA_KEY"
 
+    export enum PlatformEvent {
+        Ride,
+        Push,
+        Squish,
+        Collide
+    }
+
+    class EventHandler {
+        constructor(
+            public event: PlatformEvent,
+            public spriteKind: number,
+            public platformKind: number,
+            public handler: (sprite: Sprite, platform: Platform) => void
+        ) {}
+    }
+
     /**
     * A physics engine that does simple AABB bounding box check
     */
     export class MovingPlatformsPhysics extends ArcadePhysicsEngine {
         tilemaps: Platform[];
+        eventHandlers: EventHandler[];
 
         constructor(maxVelocity = 500, minSingleStep = 2, maxSingleStep = 4) {
             super(maxVelocity, minSingleStep, maxSingleStep);
             this.tilemaps = [];
+            this.eventHandlers = [];
+        }
+
+        addEventHandler(kind: PlatformEvent, spriteKind: number, platformKind: number, handler: (sprite: Sprite, platform: Platform) => void) {
+            this.eventHandlers.push(new EventHandler(kind, spriteKind, platformKind, handler));
         }
 
         move(dt: number) {
@@ -215,6 +237,7 @@ namespace movingPlatforms {
                                 }
                                 riders.push(sprite);
                                 this.moveSprite(sprite, dx, dy);
+                                this.maybeFireEvent(PlatformEvent.Ride, sprite, tm);
                                 break;
                             }
                         }
@@ -225,6 +248,8 @@ namespace movingPlatforms {
 
                     let compX = Fx.compare(dx, Fx.zeroFx8);
                     let compY = Fx.compare(dy, Fx.zeroFx8);
+
+                    const pushed: Sprite[] = [];
 
                     while (compX !== 0 || compY !== 0) {
                         let ddx = Fx.zeroFx8;
@@ -251,6 +276,8 @@ namespace movingPlatforms {
                         tm._top = Fx.add(ddy, tm._top);
 
                         for (const sprite of nonRiders) {
+                            if (sprite.flags & sprites.Flag.IsClipping) continue;
+
                             let wasPushed = false;
                             if (compX !== 0) {
                                 if (___overlapsTilemap(sprite, tm)) {
@@ -268,6 +295,9 @@ namespace movingPlatforms {
                             let squished = false;
 
                             if (wasPushed) {
+                                if (pushed.indexOf(sprite) === -1) {
+                                    pushed.push(sprite);
+                                }
                                 if (movingPlatforms._debug) {
                                     console.log("pushed")
                                 }
@@ -291,6 +321,7 @@ namespace movingPlatforms {
                                     if (movingPlatforms._debug) {
                                         console.log("squished!")
                                     }
+                                    this.maybeFireEvent(PlatformEvent.Squish, sprite, tm);
                                     continue;
                                 }
                             }
@@ -306,6 +337,10 @@ namespace movingPlatforms {
 
                         compX = Fx.compare(dx, Fx.zeroFx8);
                         compY = Fx.compare(dy, Fx.zeroFx8);
+                    }
+
+                    for (const sprite of pushed) {
+                        this.maybeFireEvent(PlatformEvent.Push, sprite, tm);
                     }
 
                     if (movingPlatforms._debug) {
@@ -427,6 +462,7 @@ namespace movingPlatforms {
                             for (const tile of collidedTiles) {
                                 if (!(s.flags & SPRITE_NO_WALL_COLLISION)) {
                                     registerObstacle(s, CollisionDirection.Right, tile, tile.tilemap);
+                                    this.maybeFireEvent(PlatformEvent.Collide, s, tile.tilemap);
                                 }
                             }
                         }
@@ -444,6 +480,7 @@ namespace movingPlatforms {
                             for (const tile of collidedTiles) {
                                 if (!(s.flags & SPRITE_NO_WALL_COLLISION)) {
                                     registerObstacle(s, CollisionDirection.Left, tile, tile.tilemap);
+                                    this.maybeFireEvent(PlatformEvent.Collide, s, tile.tilemap);
                                 }
                             }
                         }
@@ -533,6 +570,7 @@ namespace movingPlatforms {
                                 );
                                 if (!(s.flags & SPRITE_NO_WALL_COLLISION)) {
                                     registerObstacle(s, CollisionDirection.Bottom, tile, tile.tilemap);
+                                    this.maybeFireEvent(PlatformEvent.Collide, s, tile.tilemap);
                                 }
                             }
                         }
@@ -547,6 +585,7 @@ namespace movingPlatforms {
                                 );
                                 if (!(s.flags & SPRITE_NO_WALL_COLLISION)) {
                                     registerObstacle(s, CollisionDirection.Top, tile, tile.tilemap);
+                                    this.maybeFireEvent(PlatformEvent.Collide, s, tile.tilemap);
                                 }
                             }
                         }
@@ -668,6 +707,14 @@ namespace movingPlatforms {
                 }
             }
         }
+
+        protected maybeFireEvent(kind: PlatformEvent, sprite: Sprite, platform: Platform) {
+            for (const handler of this.eventHandlers) {
+                if (handler.event === kind && handler.spriteKind === sprite.kind() && handler.platformKind === platform.kind) {
+                    handler.handler(sprite, platform);
+                }
+            }
+        }
     }
 
     function ___overlapsTilemap(sprite: Sprite, tilemap: Platform) {
@@ -728,7 +775,7 @@ namespace movingPlatforms {
 
     function patchScene(scene: scene.Scene) {
         scene.physicsEngine = new MovingPlatformsPhysics();
-        scene.tileMap = new Platform();
+        scene.tileMap = new Platform(undefined, 0);
     }
 
     export function _enableDebug() {

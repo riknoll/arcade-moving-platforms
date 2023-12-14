@@ -8,6 +8,7 @@ namespace movingPlatforms {
         _ay = Fx.zeroFx8;
         _fx = Fx.zeroFx8;
         _fy = Fx.zeroFx8;
+        kind: number;
 
         //% group="Physics" blockSetVariable="myPlatform"
         //% blockCombine block="x" callInDebugger
@@ -163,8 +164,9 @@ namespace movingPlatforms {
             return this.renderable.z
         }
 
-        constructor(scale: TileScale = TileScale.Sixteen) {
+        constructor(scale: TileScale = TileScale.Sixteen, kind: number) {
             super(scale);
+            this.kind = kind;
         }
 
         getMap() {
