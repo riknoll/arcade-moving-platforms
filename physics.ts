@@ -5,7 +5,7 @@ namespace movingPlatforms {
     /**
     * A physics engine that does simple AABB bounding box check
     */
-    class MovingPlatformsPhysics extends ArcadePhysicsEngine {
+    export class MovingPlatformsPhysics extends ArcadePhysicsEngine {
         tilemaps: Platform[];
 
         constructor(maxVelocity = 500, minSingleStep = 2, maxSingleStep = 4) {
@@ -630,13 +630,13 @@ namespace movingPlatforms {
     }
 
     function getObstacle(tilemap: Platform, col: number, row: number) {
-        const index = tilemap._map.isOutsideMap(col, row) ? 0 : tilemap._map.getTile(col, row);
-        const tile = tilemap._map.getTileImage(index);
+        const index = tilemap.getMap().isOutsideMap(col, row) ? 0 : tilemap.getMap().getTile(col, row);
+        const tile = tilemap.getMap().getTileImage(index);
         return new Obstacle(
             tile,
-            row << this.scale,
-            col << this.scale,
-            this.layer,
+            row << tilemap.scale,
+            col << tilemap.scale,
+            tilemap.layer,
             index,
             tilemap
         );

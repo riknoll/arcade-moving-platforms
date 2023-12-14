@@ -5,10 +5,12 @@ namespace movingPlatforms {
         vx = Fx.zeroFx8;
         vy = Fx.zeroFx8;
 
-        public _map: tiles.TileMapData;
-
         constructor(scale: TileScale = TileScale.Sixteen) {
             super(scale);
+        }
+
+        getMap() {
+            return this._map;
         }
 
         protected draw(target: Image, camera: scene.Camera) {
