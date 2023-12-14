@@ -7,10 +7,12 @@ namespace movingPlatforms {
     */
     export class MovingPlatformsPhysics extends ArcadePhysicsEngine {
         tilemaps: Platform[];
+        squishHandlers: SquishHandler[];
 
         constructor(maxVelocity = 500, minSingleStep = 2, maxSingleStep = 4) {
             super(maxVelocity, minSingleStep, maxSingleStep);
             this.tilemaps = [];
+            this.squishHandlers = [];
         }
 
         move(dt: number) {
@@ -288,6 +290,11 @@ namespace movingPlatforms {
 
                                 if (squished) {
                                     sprite.flags |= sprites.Flag.IsClipping;
+                                    nonRiders.removeElement(sprite)
+                                    this.squishHandlers
+                                        .filter(h => h.kind == sprite.kind())
+                                        .forEach(h => h.handler(sprite, tm));
+                                  
                                     if (movingPlatforms._debug) {
                                         console.log("squished!")
                                     }

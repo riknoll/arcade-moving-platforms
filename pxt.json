@@ -1,18 +1,24 @@
 {
     "name": "arcade-moving-platforms",
     "version": "0.0.4",
+    "dependencies": {
+        "device": "*"
+    },
     "files": [
         "platform.ts",
         "obstacles.ts",
         "physics.ts",
         "api.ts",
-        "main.ts"
+        "main.ts",
+        "events.ts"
     ],
+    "testDependencies": {},
+    "targetVersions": {
+        "target": "1.13.52",
+        "targetId": "arcade"
+    },
     "supportedTargets": [
         "arcade"
     ],
-    "dependencies": {
-        "device": "*"
-    },
-    "testDependencies": {}
+    "preferredEditor": "tsprj"
 }
