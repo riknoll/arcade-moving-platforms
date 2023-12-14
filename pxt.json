@@ -1,7 +1,10 @@
 {
-    "name": "my-project",
-    "version": "0.0.0",
+    "name": "arcade-moving-platforms",
+    "version": "0.0.1",
     "files": [
+        "platform.ts",
+        "obstacles.ts",
+        "physics.ts",
         "main.ts"
     ],
     "supportedTargets": [
