@@ -27,4 +27,23 @@ namespace movingPlatforms {
         physics.tilemaps.removeElement(platform);
         platform.renderable.destroy();
     }
+
+    /**
+     * Run code when two kinds of sprites overlap
+     */
+    //% blockId=movingPlatforms_onSquish
+    //% block="on $sprite of kind $kind=spritekind squished by $platform"
+    //% draggableParameters="reporter"
+    export function onSquish(kind: number, handler: (sprite: Sprite, platform: Platform) => void) {
+        if (kind == undefined || !handler) return;
+        const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
+        const sh = physics.squishHandlers; //
+
+        sh.push(
+            new SquishHandler(
+                kind,
+                handler
+            )
+        );
+    }
 }
