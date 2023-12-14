@@ -1,5 +1,5 @@
 namespace movingPlatforms {
-    export let debug = false;
+    export let _debug = false;
     const OBSTACLE_DATA_KEY = "%OBSTACLE_DATA_KEY"
 
     /**
@@ -210,7 +210,7 @@ namespace movingPlatforms {
                         for (const ob of getObstacles(sprite)) {
                             if (ob && ob.tilemap === tm) {
                                 isRider = true;
-                                if (movingPlatforms.debug) {
+                                if (movingPlatforms._debug) {
                                     if (___overlapsTilemap(sprite, tm)) {
                                         console.log("RIDER overlapping before")
                                     }
@@ -270,7 +270,7 @@ namespace movingPlatforms {
                             let squished = false;
 
                             if (wasPushed) {
-                                if (movingPlatforms.debug) {
+                                if (movingPlatforms._debug) {
                                     console.log("pushed")
                                 }
                                 for (const otherMap of this.tilemaps) {
@@ -293,10 +293,14 @@ namespace movingPlatforms {
                                     this.squishHandlers
                                         .filter(h => h.kind == sprite.kind())
                                         .forEach(h => h.handler(sprite, tm));
+                                  
+                                    if (movingPlatforms._debug) {
+                                        console.log("squished!")
+                                    }
                                     continue;
                                 }
                             }
-                            if (movingPlatforms.debug) {
+                            if (movingPlatforms._debug) {
                                 if (___overlapsTilemap(sprite, tm)) {
                                     console.log("Still overlapping")
                                 }
@@ -310,7 +314,7 @@ namespace movingPlatforms {
                         compY = Fx.compare(dy, Fx.zeroFx8);
                     }
 
-                    if (movingPlatforms.debug) {
+                    if (movingPlatforms._debug) {
                         for (const rider of riders) {
                             if (___overlapsTilemap(rider, tm)) {
                                 console.log("Rider overlaps after move")
@@ -320,7 +324,7 @@ namespace movingPlatforms {
                 }
             }
 
-            if (movingPlatforms.debug) {
+            if (movingPlatforms._debug) {
                 for (const sprite of this.sprites) {
                     for (const tilemap of this.tilemaps) {
                         if (___overlapsTilemap(sprite, tilemap)) {
@@ -731,5 +735,33 @@ namespace movingPlatforms {
     function patchScene(scene: scene.Scene) {
         scene.physicsEngine = new MovingPlatformsPhysics();
         scene.tileMap = new Platform();
+    }
+
+    export function _enableDebug() {
+        _debug = true;
+        let nextFrame = false;
+        let pausing = false;
+        controller.menu.onEvent(ControllerButtonEvent.Pressed, () => {
+            pausing = true
+        })
+        controller.menu.onEvent(ControllerButtonEvent.Released, () => {
+            nextFrame = true;
+        })
+
+        game.currentScene().eventContext.registerFrameHandler(scene.PHYSICS_PRIORITY - 1, () => {
+            game.currentScene().eventContext.deltaTimeMillis = 1000 / 30;
+            if (pausing) {
+
+                pauseUntil(() => {
+                    if (controller.B.isPressed()) return true;
+                    if (nextFrame) {
+                        nextFrame = false;
+                        return true;
+                    }
+                    return false
+                })
+            }
+        })
+
     }
 }
