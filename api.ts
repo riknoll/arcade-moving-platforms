@@ -3,7 +3,7 @@
 //% color="#0381a3"
 namespace movingPlatforms {
     //% blockId=movingPlatforms_createPlatform
-    //% block="create platform $platform"
+    //% block="create platform $tilemap"
     //% tilemap.shadow=tiles_tilemap_editor
     //% blockSetVariable="myPlatform"
     //% duplicateShadowOnDrag
