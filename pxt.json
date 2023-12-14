@@ -1,6 +1,6 @@
 {
     "name": "arcade-moving-platforms",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "files": [
         "platform.ts",
         "obstacles.ts",
