@@ -3,7 +3,7 @@
 //% color="#0381a3"
 namespace movingPlatforms {
     //% blockId=movingPlatforms_createPlatform
-    //% block="create platform $tilemap"
+    //% block="create platform $tilemap of kind $kind"
     //% tilemap.shadow=tiles_tilemap_editor
     //% kind.shadow=movingplatforms_platformkind
     //% blockSetVariable="myPlatform"
@@ -63,7 +63,7 @@ namespace movingPlatforms {
     /**
      * Run code when two kinds of sprites overlap
      */
-    //% blockId=movingPlatforms_onSquish
+    //% blockId=movingPlatforms_onEvent
     //% block="on $sprite of kind $spriteKind $event $platform of kind $platformKind"
     //% spriteKind.shadow=spritekind
     //% platformKind.shadow=movingplatforms_platformkind
