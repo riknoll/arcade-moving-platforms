@@ -30,6 +30,34 @@ namespace movingPlatforms {
         return kind;
     }
 
+
+    /**
+     * Check if the given platform is being hit in the given direction
+     * @param direction
+     */
+    //% blockId=movingPlatforms_isHittingPlatform
+    //% block="is $sprite hitting $platform $direction"
+    //% platform.shadow=variables_get
+    //% platform.defl=myPlatform
+    //% sprite.shadow=variables_get
+    //% sprite.defl=mySprite
+    export function isHittingPlatform(sprite: Sprite, platform: Platform,  direction: CollisionDirection) {
+        return platformInDirection(sprite, direction) === platform;
+    }
+
+    /**
+     * returns platform sprite is hitting in given direction, if one exists.
+     */
+    //% blockId=movingPlatforms_platformInDirection
+    //% block="platform $sprite is hitting to $direction"
+    //% sprite.shadow=variables_get
+    //% sprite.defl=mySprite
+    export function platformInDirection(sprite: Sprite, direction: CollisionDirection) {
+        const obstacles = movingPlatforms.getObstacles(sprite);
+        const inDirection = obstacles[direction];
+        return inDirection && inDirection.tilemap;
+    }
+
     /**
      * Run code when two kinds of sprites overlap
      */

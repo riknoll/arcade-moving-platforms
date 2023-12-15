@@ -746,7 +746,7 @@ namespace movingPlatforms {
         getObstacles(sprite)[direction] = other;
     }
 
-    function getObstacles(sprite: Sprite) {
+    export function getObstacles(sprite: Sprite) {
         let obstacles: Obstacle[] = sprite.data[OBSTACLE_DATA_KEY];
 
         if (!obstacles) {
