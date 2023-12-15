@@ -15,14 +15,14 @@ namespace movingPlatforms {
             public event: PlatformEvent,
             public spriteKind: number,
             public platformKind: number,
-            public handler: (sprite: Sprite, platform: Platform) => void
+            public handler: (sprite: Sprite, platform: PlatformSprite) => void
         ) {}
     }
 
     export class SquishHandler {
         constructor (
             public kind: number,
-            public handler: (sprite: Sprite, platform: Platform) => void,
+            public handler: (sprite: Sprite, platform: PlatformSprite) => void,
         ) { }
     }
 }

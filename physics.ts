@@ -17,7 +17,7 @@ namespace movingPlatforms {
             this.squishHandlers = [];
         }
 
-        addEventHandler(kind: PlatformEvent, spriteKind: number, platformKind: number, handler: (sprite: Sprite, platform: Platform) => void) {
+        addEventHandler(kind: PlatformEvent, spriteKind: number, platformKind: number, handler: (sprite: Sprite, platform: PlatformSprite) => void) {
             this.eventHandlers.push(new EventHandler(kind, spriteKind, platformKind, handler));
         }
 
@@ -37,7 +37,7 @@ namespace movingPlatforms {
                 if (s.vx || s.vy) clearObstacles(s);
                 else {
                     for (const ob of getObstacles(s)) {
-                        if (ob && (ob.tilemap._vx || ob.tilemap._vy)) {
+                        if (ob && (ob.tilemap.sprite._vx || ob.tilemap.sprite._vy)) {
                             clearObstacles(s);
                             break;
                         }
@@ -134,69 +134,69 @@ namespace movingPlatforms {
             }
 
             for (const tm of this.tilemaps) {
-                if (tm._ax) {
-                    tm._vx = Fx.add(
-                        tm._vx,
+                if (tm.sprite._ax) {
+                    tm.sprite._vx = Fx.add(
+                        tm.sprite._vx,
                         Fx.idiv(
                             Fx.imul(
-                                tm._ax,
+                                tm.sprite._ax,
                                 dtMs
                             ),
                             1000
                         )
                     );
-                } else if (tm._fx) {
+                } else if (tm.sprite._fx) {
                     const fx = Fx.idiv(
                         Fx.imul(
-                            tm._fx,
+                            tm.sprite._fx,
                             dtMs
                         ),
                         1000
                     );
-                    const c = Fx.compare(tm._vx, fx);
+                    const c = Fx.compare(tm.sprite._vx, fx);
                     if (c < 0) // v < f, v += f
-                        tm._vx = Fx.min(Fx.zeroFx8, Fx.add(tm._vx, fx));
+                        tm.sprite._vx = Fx.min(Fx.zeroFx8, Fx.add(tm.sprite._vx, fx));
                     else if (c > 0) // v > f, v -= f
-                        tm._vx = Fx.max(Fx.zeroFx8, Fx.sub(tm._vx, fx));
+                        tm.sprite._vx = Fx.max(Fx.zeroFx8, Fx.sub(tm.sprite._vx, fx));
                     else
-                        tm._vx = Fx.zeroFx8
+                        tm.sprite._vx = Fx.zeroFx8
                 }
 
-                if (tm._ay) {
-                    tm._vy = Fx.add(
-                        tm._vy,
+                if (tm.sprite._ay) {
+                    tm.sprite._vy = Fx.add(
+                        tm.sprite._vy,
                         Fx.idiv(
                             Fx.imul(
-                                tm._ay,
+                                tm.sprite._ay,
                                 dtMs
                             ),
                             1000
                         )
                     );
-                } else if (tm._fy) {
+                } else if (tm.sprite._fy) {
                     const fy = Fx.idiv(
                         Fx.imul(
-                            tm._fy,
+                            tm.sprite._fy,
                             dtMs
                         ),
                         1000
                     );
-                    const c = Fx.compare(tm._vy, fy);
+                    const c = Fx.compare(tm.sprite._vy, fy);
                     if (c < 0) // v < f, v += f
-                        tm._vy = Fx.min(Fx.zeroFx8, Fx.add(tm._vy, fy));
+                        tm.sprite._vy = Fx.min(Fx.zeroFx8, Fx.add(tm.sprite._vy, fy));
                     else if (c > 0) // v > f, v -= f
-                        tm._vy = Fx.max(Fx.zeroFx8, Fx.sub(tm._vy, fy));
+                        tm.sprite._vy = Fx.max(Fx.zeroFx8, Fx.sub(tm.sprite._vy, fy));
                     else
-                        tm._vy = Fx.zeroFx8;
+                        tm.sprite._vy = Fx.zeroFx8;
                 }
 
-                if (tm._vx || tm._vy) {
+                if (tm.sprite._vx || tm.sprite._vy) {
                     const nonRiders: Sprite[] = [];
                     const riders: Sprite[] = [];
 
                     let dx = Fx.idiv(
                         Fx.imul(
-                            tm._vx,
+                            tm.sprite._vx,
                             dtMs
                         ),
                         1000
@@ -204,7 +204,7 @@ namespace movingPlatforms {
 
                     let dy = Fx.idiv(
                         Fx.imul(
-                            tm._vy,
+                            tm.sprite._vy,
                             dtMs
                         ),
                         1000
@@ -258,8 +258,8 @@ namespace movingPlatforms {
                             dy = Fx.sub(dy, ddy);
                         }
 
-                        tm._left = Fx.add(ddx, tm._left);
-                        tm._top = Fx.add(ddy, tm._top);
+                        tm.sprite._x = Fx.add(ddx, tm.sprite._x);
+                        tm.sprite._y = Fx.add(ddy, tm.sprite._y);
 
                         for (const rider of riders) {
                             this.moveSprite(rider, ddx, ddy);
@@ -408,7 +408,7 @@ namespace movingPlatforms {
                                             Fx.sub(hbox.left, Fx.oneFx8),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm._left
+                                    tm.sprite._x
                                 ),
                                 tileScale
                             );
@@ -425,7 +425,7 @@ namespace movingPlatforms {
                                         ),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm._top
+                                    tm.sprite._y
                                 ),
                                 tileScale
                             );
@@ -524,7 +524,7 @@ namespace movingPlatforms {
                                             Fx.sub(hbox.top, Fx.oneFx8),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm._top
+                                    tm.sprite._y
                                 ),
                                 tileScale
                             );
@@ -537,7 +537,7 @@ namespace movingPlatforms {
                                         ),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm._left
+                                    tm.sprite._x
                                 ),
                                 tileScale
                             );
@@ -635,7 +635,7 @@ namespace movingPlatforms {
                                         ),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm._left
+                                    tm.sprite._x
                                 ),
                                 tileScale
                             );
@@ -649,7 +649,7 @@ namespace movingPlatforms {
                                         ),
                                         Fx.oneHalfFx8
                                     ),
-                                    tm._top
+                                    tm.sprite._y
                                 ),
                                 tileScale
                             );
@@ -706,17 +706,17 @@ namespace movingPlatforms {
         protected maybeFireEvent(kind: PlatformEvent, sprite: Sprite, platform: Platform) {
             for (const handler of this.eventHandlers) {
                 if (handler.event === kind && handler.spriteKind === sprite.kind() && handler.platformKind === platform.kind) {
-                    handler.handler(sprite, platform);
+                    handler.handler(sprite, platform.sprite);
                 }
             }
         }
     }
 
     function ___overlapsTilemap(sprite: Sprite, tilemap: Platform) {
-        let x0 = Fx.toIntShifted(Fx.sub(sprite._hitbox.left, tilemap._left), tilemap.scale);
-        let y0 = Fx.toIntShifted(Fx.sub(sprite._hitbox.top, tilemap._top), tilemap.scale);
-        let x1 = Fx.toIntShifted(Fx.sub(sprite._hitbox.right, tilemap._left), tilemap.scale);
-        let y1 = Fx.toIntShifted(Fx.sub(sprite._hitbox.bottom, tilemap._top), tilemap.scale);
+        let x0 = Fx.toIntShifted(Fx.sub(sprite._hitbox.left, tilemap.sprite._x), tilemap.scale);
+        let y0 = Fx.toIntShifted(Fx.sub(sprite._hitbox.top, tilemap.sprite._y), tilemap.scale);
+        let x1 = Fx.toIntShifted(Fx.sub(sprite._hitbox.right, tilemap.sprite._x), tilemap.scale);
+        let y1 = Fx.toIntShifted(Fx.sub(sprite._hitbox.bottom, tilemap.sprite._y), tilemap.scale);
 
         for (let x = Math.max(0, x0); x <= x1; x++) {
             for (let y = Math.max(0, y0); y <= y1; y++) {
@@ -732,8 +732,8 @@ namespace movingPlatforms {
         const tile = tilemap.getMap().getTileImage(index);
         return new Obstacle(
             tile,
-            tilemap.top + (row << tilemap.scale),
-            tilemap.left + (col << tilemap.scale),
+            tilemap.sprite.top + (row << tilemap.scale),
+            tilemap.sprite.left + (col << tilemap.scale),
             tilemap.layer,
             index,
             tilemap

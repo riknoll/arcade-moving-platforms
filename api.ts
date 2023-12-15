@@ -16,17 +16,7 @@ namespace movingPlatforms {
         const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
         physics.tilemaps.push(p);
 
-        return p;
-    }
-
-    //% blockId=movingPlatforms_destroy
-    //% block="destroy platform $platform"
-    //% platform.shadow=variables_get
-    //% platform.defl=myPlatform
-    export function destroy(platform: Platform) {
-        const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
-        physics.tilemaps.removeElement(platform);
-        platform.renderable.destroy();
+        return p.sprite;
     }
 
     /**
@@ -47,7 +37,7 @@ namespace movingPlatforms {
     //% block="on $sprite of kind $kind squished by $platform"
     //% kind.shadow=spritekind
     //% draggableParameters="reporter"
-    export function onSquish(kind: number, handler: (sprite: Sprite, platform: Platform) => void) {
+    export function onSquish(kind: number, handler: (sprite: Sprite, platform: PlatformSprite) => void) {
         if (kind == undefined || !handler) return;
         const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
         const sh = physics.squishHandlers; //
@@ -68,7 +58,7 @@ namespace movingPlatforms {
     //% spriteKind.shadow=spritekind
     //% platformKind.shadow=movingplatforms_platformkind
     //% draggableParameters="reporter"
-    export function onEvent(event: PlatformEvent, spriteKind: number, platformKind: number, handler: (sprite: Sprite, platform: Platform) => void) {
+    export function onEvent(event: PlatformEvent, spriteKind: number, platformKind: number, handler: (sprite: Sprite, platform: PlatformSprite) => void) {
         const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
         physics.addEventHandler(event, spriteKind, platformKind, handler);
     }

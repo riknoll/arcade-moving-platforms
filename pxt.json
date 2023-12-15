@@ -6,6 +6,7 @@
     },
     "files": [
         "platform.ts",
+        "platformSprite.ts",
         "obstacles.ts",
         "physics.ts",
         "api.ts",
