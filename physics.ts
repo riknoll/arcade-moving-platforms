@@ -728,8 +728,8 @@ namespace movingPlatforms {
         const tile = tilemap.getMap().getTileImage(index);
         return new Obstacle(
             tile,
-            row << tilemap.scale,
-            col << tilemap.scale,
+            tilemap.top + (row << tilemap.scale),
+            tilemap.left + (col << tilemap.scale),
             tilemap.layer,
             index,
             tilemap
