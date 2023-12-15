@@ -24,6 +24,13 @@ namespace movingPlatforms {
             this.sprite.top = 0;
         }
 
+        setData(data: tiles.TileMapData) {
+            super.setData(data);
+            if (this.sprite) {
+                this.sprite.setDimensions(this.width, this.height);
+            }
+        }
+
         getMap() {
             return this._map;
         }
