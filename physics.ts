@@ -311,7 +311,7 @@ namespace movingPlatforms {
                                     nonRiders.removeElement(sprite)
                                     this.squishHandlers
                                         .filter(h => h.kind == sprite.kind())
-                                        .forEach(h => h.handler(sprite, tm));
+                                        .forEach(h => h.handler(sprite, tm.sprite));
 
                                     if (movingPlatforms._debug) {
                                         console.log("squished!")
@@ -771,7 +771,7 @@ namespace movingPlatforms {
 
     function patchScene(scene: scene.Scene) {
         scene.physicsEngine = new MovingPlatformsPhysics();
-        scene.tileMap = new Platform(undefined, 0);
+        scene.tileMap = new Platform(null, undefined, 0);
     }
 
     export function _enableDebug() {

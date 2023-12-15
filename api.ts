@@ -10,8 +10,7 @@ namespace movingPlatforms {
     //% duplicateShadowOnDrag
     //% weight=100
     export function createPlatform(tilemap: tiles.TileMapData, kind: number) {
-        const p = new Platform(tilemap.scale, kind);
-        p.setData(tilemap);
+        const p = new Platform(tilemap, tilemap.scale, kind);
 
         const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
         physics.tilemaps.push(p);

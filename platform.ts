@@ -4,15 +4,18 @@ namespace movingPlatforms {
         kind: number;
 
         get width() {
+            if (!this._map) return 0;
             return this._map.width << this.scale
         }
 
         get height() {
+            if (!this._map) return 0;
             return this._map.height << this.scale
         }
 
-        constructor(scale: TileScale = TileScale.Sixteen, kind: number) {
+        constructor(data: tiles.TileMapData, scale: TileScale = TileScale.Sixteen, kind: number) {
             super(scale);
+            this.setData(data);
             this.kind = kind;
             this.renderable.destroy();
             this.sprite = new PlatformSprite(this);
