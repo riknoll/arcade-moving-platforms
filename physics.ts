@@ -217,12 +217,12 @@ namespace movingPlatforms {
                             if (ob && ob.tilemap === tm) {
                                 isRider = true;
                                 if (movingPlatforms._debug) {
+                                    console.log("RIDING")
                                     if (___overlapsTilemap(sprite, tm)) {
                                         console.log("RIDER overlapping before")
                                     }
                                 }
                                 riders.push(sprite);
-                                this.moveSprite(sprite, dx, dy);
                                 this.maybeFireEvent(PlatformEvent.Ride, sprite, tm);
                                 break;
                             }
@@ -260,6 +260,10 @@ namespace movingPlatforms {
 
                         tm._left = Fx.add(ddx, tm._left);
                         tm._top = Fx.add(ddy, tm._top);
+
+                        for (const rider of riders) {
+                            this.moveSprite(rider, ddx, ddy);
+                        }
 
                         for (const sprite of nonRiders) {
                             if (sprite.flags & sprites.Flag.IsClipping) continue;
