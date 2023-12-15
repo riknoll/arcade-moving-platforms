@@ -3,6 +3,14 @@ namespace movingPlatforms {
         sprite: PlatformSprite;
         kind: number;
 
+        get width() {
+            return this._map.width << this.scale
+        }
+
+        get height() {
+            return this._map.height << this.scale
+        }
+
         constructor(scale: TileScale = TileScale.Sixteen, kind: number) {
             super(scale);
             this.kind = kind;

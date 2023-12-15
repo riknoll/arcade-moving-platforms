@@ -5,6 +5,7 @@ namespace movingPlatforms {
 
             this.flags |= sprites.Flag.HitboxOverlaps;
             this.setKind(platform.kind);
+            this.setDimensions(platform.width, platform.height)
         }
 
         setDimensions(width: number, height: number) {
