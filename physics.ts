@@ -758,6 +758,7 @@ namespace movingPlatforms {
 
     function clearObstacles(sprite: Sprite) {
         sprite.data[OBSTACLE_DATA_KEY] = [];
+        sprite.clearObstacles();
     }
 
     export function __init() {
