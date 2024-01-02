@@ -10,9 +10,11 @@ namespace movingPlatforms {
     //% duplicateShadowOnDrag
     //% weight=100
     export function createPlatform(tilemap: tiles.TileMapData, kind: number) {
+        movingPlatforms.__init();
         const p = new Platform(tilemap, tilemap.scale, kind);
 
         const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
+        console.log(physics.tilemaps)
         physics.tilemaps.push(p);
 
         return p.sprite;
@@ -41,6 +43,7 @@ namespace movingPlatforms {
     //% sprite.shadow=variables_get
     //% sprite.defl=mySprite
     export function isHittingPlatform(sprite: Sprite, platform: Platform,  direction: CollisionDirection) {
+        movingPlatforms.__init();
         return platformInDirection(sprite, direction) === platform;
     }
 
@@ -52,6 +55,7 @@ namespace movingPlatforms {
     //% sprite.shadow=variables_get
     //% sprite.defl=mySprite
     export function platformInDirection(sprite: Sprite, direction: CollisionDirection) {
+        movingPlatforms.__init();
         const obstacles = movingPlatforms.getObstacles(sprite);
         const inDirection = obstacles[direction];
         return inDirection && inDirection.tilemap;
@@ -65,6 +69,7 @@ namespace movingPlatforms {
     //% kind.shadow=spritekind
     //% draggableParameters="reporter"
     export function onSquish(kind: number, handler: (sprite: Sprite, platform: PlatformSprite) => void) {
+        movingPlatforms.__init();
         if (kind == undefined || !handler) return;
         const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
         const sh = physics.squishHandlers; //
@@ -86,6 +91,7 @@ namespace movingPlatforms {
     //% platformKind.shadow=movingplatforms_platformkind
     //% draggableParameters="reporter"
     export function onEvent(event: PlatformEvent, spriteKind: number, platformKind: number, handler: (sprite: Sprite, platform: PlatformSprite) => void) {
+        movingPlatforms.__init();
         const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
         physics.addEventHandler(event, spriteKind, platformKind, handler);
     }

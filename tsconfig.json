@@ -7,7 +7,7 @@
     },
     "include": [
         "**/*.ts"
-    ],
+, "scripts/create-test-project.js"    ],
     "exclude": [
         "built/**",
         "pxt_modules/**/*test.ts"

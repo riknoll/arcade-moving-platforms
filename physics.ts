@@ -217,7 +217,7 @@ namespace movingPlatforms {
                             if (ob && ob.tilemap === tm) {
                                 isRider = true;
                                 if (movingPlatforms._debug) {
-                                    console.log("RIDING")
+                                    console.log("RIDING " + sprite.id)
                                     if (___overlapsTilemap(sprite, tm)) {
                                         console.log("RIDER overlapping before")
                                     }
@@ -228,6 +228,9 @@ namespace movingPlatforms {
                             }
                         }
                         if (!isRider && !(sprite.flags & (sprites.Flag.GhostThroughWalls | sprites.Flag.IsClipping))) {
+                            if (movingPlatforms._debug) {
+                                console.log("Not riding " + sprite.id)
+                            }
                             nonRiders.push(sprite);
                         }
                     }
@@ -262,7 +265,10 @@ namespace movingPlatforms {
                         tm.sprite._y = Fx.add(ddy, tm.sprite._y);
 
                         for (const rider of riders) {
-                            this.moveSprite(rider, ddx, ddy);
+                            if (_debug) {
+                                console.log(`moving rider ${rider.vx} ${rider.vy} ${ddx} ${ddy}`)
+                            }
+                            this.moveSpriteCore(rider, ddx, ddy, tm);
                         }
 
                         for (const sprite of nonRiders) {
@@ -442,6 +448,9 @@ namespace movingPlatforms {
                     if (collidedTiles.length) {
                         if (right) {
                             for (const tile of collidedTiles) {
+                                if (_debug) {
+                                    console.log("collided right")
+                                }
                                 s._x = Fx.min(
                                     Fx.sub(
                                         Fx.sub(
@@ -463,6 +472,9 @@ namespace movingPlatforms {
                         }
                         else {
                             for (const tile of collidedTiles) {
+                                if (_debug) {
+                                    console.log("collided left")
+                                }
                                 s._x = Fx.max(
                                     Fx.sub(
                                         Fx8(tile.right),
@@ -553,6 +565,9 @@ namespace movingPlatforms {
                     if (collidedTiles.length) {
                         if (down) {
                             for (const tile of collidedTiles) {
+                                if (_debug) {
+                                    console.log("collided down")
+                                }
                                 s._y = Fx.min(
                                     Fx.sub(
                                         Fx.sub(
@@ -571,6 +586,9 @@ namespace movingPlatforms {
                         }
                         else {
                             for (const tile of collidedTiles) {
+                                if (_debug) {
+                                    console.log("collided up")
+                                }
                                 s._y = Fx.max(
                                     Fx.sub(
                                         Fx8(tile.bottom),
@@ -671,6 +689,10 @@ namespace movingPlatforms {
 
         /** moves a sprite explicitly outside of the normal velocity changes **/
         public moveSprite(s: Sprite, dx: Fx8, dy: Fx8) {
+            this.moveSpriteCore(s, dx, dy);
+        }
+
+        public moveSpriteCore(s: Sprite, dx: Fx8, dy: Fx8, ignorePlatform?: Platform) {
             s._lastX = s._x;
             s._lastY = s._y;
             s._x = Fx.add(s._x, dx);
@@ -691,7 +713,7 @@ namespace movingPlatforms {
                         dx,
                         dy
                     );
-                    this.platformCollisions(ms, [tm as Platform].concat(this.tilemaps));
+                    this.platformCollisions(ms, [tm as Platform].concat(this.tilemaps).filter(p => p !== ignorePlatform));
                     // otherwise, accept movement...
                 } else if (tm.isOnWall(s) && !this.canResolveClipping(s, tm)) {
                     // if no luck, flag as clipping into a wall
@@ -761,7 +783,11 @@ namespace movingPlatforms {
         sprite.clearObstacles();
     }
 
+    let didInit = false;
+
     export function __init() {
+        if (didInit) return;
+        didInit = true;
         patchScene(game.currentScene());
 
         game.addScenePushHandler(() => {
