@@ -47,9 +47,13 @@ namespace movingPlatforms {
         draw(target: Image, camera: scene.Camera) {
             if (!this.enabled) return;
 
+            // if (game.currentScene().tileMap !== this) {
+            //     console.log(`diff ${Math.floor(this.sprite.left - camera.drawOffsetX) - Math.floor(mySprite.left - camera.drawOffsetX)}`)
+            // }
+
             // render tile map
-            const l = Fx.toInt(this.sprite._x) - camera.drawOffsetX;
-            const t = Fx.toInt(this.sprite._y) - camera.drawOffsetY;
+            const l = Math.floor(this.sprite.left - camera.drawOffsetX)
+            const t = Math.floor(this.sprite.top - camera.drawOffsetY);
 
             const x0 = Math.max(0, -l >> this.scale);
             const xn = Math.min(this._map.width, ((-l + target.width) >> this.scale) + 1);

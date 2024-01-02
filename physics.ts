@@ -265,9 +265,6 @@ namespace movingPlatforms {
                         tm.sprite._y = Fx.add(ddy, tm.sprite._y);
 
                         for (const rider of riders) {
-                            if (_debug) {
-                                console.log(`moving rider ${rider.vx} ${rider.vy} ${ddx} ${ddy}`)
-                            }
                             this.moveSpriteCore(rider, ddx, ddy, tm);
                         }
 

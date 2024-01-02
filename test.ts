@@ -126,4 +126,4 @@ forever(function () {
     moveTo(60, 60, 40, myPlatform)
 })
 scene.cameraFollowSprite(mySprite)
-// movingPlatforms._enableDebug()
+movingPlatforms._enableDebug()
