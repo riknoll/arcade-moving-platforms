@@ -2,6 +2,7 @@ namespace movingPlatforms {
     export class Platform extends tiles.TileMap {
         sprite: PlatformSprite;
         kind: number;
+        ignoredSprites: Sprite[];
 
         get width() {
             if (!this._map) return 0;
@@ -22,6 +23,7 @@ namespace movingPlatforms {
             this.sprite.z = -1;
             this.sprite.left = 0;
             this.sprite.top = 0;
+            this.ignoredSprites = [];
         }
 
         setData(data: tiles.TileMapData) {
@@ -59,6 +61,19 @@ namespace movingPlatforms {
             const xn = Math.min(this._map.width, ((-l + target.width) >> this.scale) + 1);
             const y0 = Math.max(0, -t >> this.scale);
             const yn = Math.min(this._map.height, ((-t + target.height) >> this.scale) + 1);
+
+            let shouldPrune = false;
+
+            for (const sprite of this.ignoredSprites) {
+                if (sprite.flags & sprites.Flag.Destroyed) {
+                    shouldPrune = true;
+                    break;
+                }
+            }
+
+            if (shouldPrune) {
+                this.ignoredSprites = this.ignoredSprites.filter(p => !(p.flags & sprites.Flag.Destroyed))
+            }
 
 
             for (let x = x0; x <= xn; ++x) {

@@ -212,6 +212,8 @@ namespace movingPlatforms {
 
 
                     for (const sprite of this.sprites) {
+                        if (tm.ignoredSprites.indexOf(sprite) !== -1) continue;
+
                         let isRider = false;
                         for (const ob of getObstacles(sprite)) {
                             if (ob && ob.tilemap === tm) {
@@ -402,6 +404,7 @@ namespace movingPlatforms {
                         y = Fx.iadd(tileSize, y)
                     ) {
                         for (const tm of tms) {
+                            if (tm.ignoredSprites.indexOf(s) !== -1) continue;
                             const x0 = Fx.toIntShifted(
                                 Fx.sub(
                                     Fx.add(
@@ -524,6 +527,7 @@ namespace movingPlatforms {
                     ) {
 
                         for (const tm of tms) {
+                            if (tm.ignoredSprites.indexOf(s) !== -1) continue;
                             const y0 = Fx.toIntShifted(
                                 Fx.sub(
                                     Fx.add(

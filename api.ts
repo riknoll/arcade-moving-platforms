@@ -9,7 +9,7 @@ namespace movingPlatforms {
     //% blockSetVariable="myPlatform"
     //% duplicateShadowOnDrag
     //% weight=100
-    export function createPlatform(tilemap: tiles.TileMapData, kind: number) {
+    export function createPlatform(tilemap: tiles.TileMapData, kind: number): Sprite {
         movingPlatforms.__init();
         const p = new Platform(tilemap, tilemap.scale, kind);
 
@@ -42,9 +42,15 @@ namespace movingPlatforms {
     //% platform.defl=myPlatform
     //% sprite.shadow=variables_get
     //% sprite.defl=mySprite
-    export function isHittingPlatform(sprite: Sprite, platform: Platform,  direction: CollisionDirection) {
+    export function isHittingPlatform(sprite: Sprite, platform: Sprite, direction: CollisionDirection) {
         movingPlatforms.__init();
-        return platformInDirection(sprite, direction) === platform;
+        const actualPlatform = (platform as PlatformSprite).platform;
+
+        if (!actualPlatform) {
+            throw "Calling isHittingPlatform on non-platform!"
+        }
+
+        return platformInDirection(sprite, direction) === actualPlatform;
     }
 
     /**
@@ -94,5 +100,29 @@ namespace movingPlatforms {
         movingPlatforms.__init();
         const physics = game.currentScene().physicsEngine as MovingPlatformsPhysics;
         physics.addEventHandler(event, spriteKind, platformKind, handler);
+    }
+
+    /**
+     * Ignore a sprite
+     */
+    //% blockId=movingPlatforms_ignoreSprite
+    //% block="$platform ignore $toIgnore"
+    //% platform.shadow=variables_get
+    //% platform.defl=myPlatform
+    //% toIgnore.shadow=variables_get
+    //% toIgnore.defl=toIgnore
+    //% spriteKind.shadow=spritekind
+    export function ignoreSprite(platform: Sprite, toIgnore: Sprite) {
+        movingPlatforms.__init();
+
+        const actualPlatform = (platform as PlatformSprite).platform;
+
+        if (!actualPlatform) {
+            throw "Calling ignoreSprite on non-platform!"
+        }
+
+        if (actualPlatform.ignoredSprites.indexOf(toIgnore) === -1) {
+            actualPlatform.ignoredSprites.push(toIgnore);
+        }
     }
 }
